@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: flask-webapp
+  name: flask-webapp
+spec:
+  selector:
+    matchLabels:
+      app: flask-webapp
+  replicas: 1 
+  template:
+    metadata:
+      labels:
+        app: flask-webapp
+    spec:
+      containers:
+      - name: flask
+        image: hadrisubagja/flask-webapp:v1.0.0
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+        - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-webapp-service
+  labels:
+    run: flask-webapp-service
+spec:
+  type: NodePort
+  ports:
+  - port: 5000
+    protocol: TCP
+  selector:
+    app: flask-webapp
